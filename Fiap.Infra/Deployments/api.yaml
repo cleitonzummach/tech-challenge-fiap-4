@@ -1,0 +1,201 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consultar-contato-deployment
+  namespace: fiap-contacts
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: consultar-contato
+  template:
+    metadata:
+      labels:
+        app: consultar-contato
+    spec:
+      containers:
+      - name: consultar-contato
+        image: cdoichedocker/fiap-api-consultar-contato:v1
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: ASPNETCORE_ENVIRONMENT
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: POSTGRES_HOST
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: POSTGRES_PORT
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_PASSWORD
+      imagePullSecrets:
+          - name: regcred
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: criar-contato-deployment
+  namespace: fiap-contacts
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: criar-contato
+  template:
+    metadata:
+      labels:
+        app: criar-contato
+    spec:
+      containers:
+      - name: criar-contato
+        image: cdoichedocker/fiap-api-criar-contato:v1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: ASPNETCORE_ENVIRONMENT
+        - name: ConsultarServiceUrl
+          value: http://consultar-contato-service
+        - name: RABBIT_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: RABBITMQ_HOST
+        - name: RABBIT_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: RABBITMQ_PORT
+      imagePullSecrets:
+          - name: regcred
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alterar-contato-deployment
+  namespace: fiap-contacts
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: alterar-contato
+  template:
+    metadata:
+      labels:
+        app: alterar-contato
+    spec:
+      containers:
+      - name: alterar-contato
+        image: cdoichedocker/fiap-api-alterar-contato:v1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: ASPNETCORE_ENVIRONMENT
+        - name: ConsultarServiceUrl
+          value: http://consultar-contato-service
+        - name: RABBIT_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: RABBITMQ_HOST
+        - name: RABBIT_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: RABBITMQ_PORT
+      imagePullSecrets:
+          - name: regcred
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: excluir-contato-deployment
+  namespace: fiap-contacts
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: excluir-contato
+  template:
+    metadata:
+      labels:
+        app: excluir-contato
+    spec:
+      containers:
+      - name: excluir-contato
+        image: cdoichedocker/fiap-api-excluir-contato:v1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: ASPNETCORE_ENVIRONMENT
+        - name: ConsultarServiceUrl
+          value: http://consultar-contato-service
+        - name: RABBIT_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: RABBITMQ_HOST
+        - name: RABBIT_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: RABBITMQ_PORT
+      imagePullSecrets:
+          - name: regcred

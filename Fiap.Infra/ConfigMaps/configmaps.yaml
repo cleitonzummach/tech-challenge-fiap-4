@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-configs
+  namespace: fiap-contacts
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+  POSTGRES_HOST: postgres-service
+  POSTGRES_PORT: "5432"
+  RABBITMQ_HOST: rabbitmq-service
+  RABBITMQ_PORT: "5672"
+
