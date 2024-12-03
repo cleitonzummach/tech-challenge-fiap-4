@@ -11,10 +11,12 @@ jobs:
     strategy:
       matrix:
         service:
-          - Api
+          - Api/Fiap.Api.AlterarContato
+          - Api/Fiap.Api.ConsultarContato
+          - Api/Fiap.Api.CriarContato
+          - Api/Fiap.Api.ExcluirContato
           - Consumer
           - Core
-          - Infra
           - Tests
 
     steps:
