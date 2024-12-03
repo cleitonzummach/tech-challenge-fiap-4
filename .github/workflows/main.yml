@@ -1,0 +1,50 @@
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - Api
+          - Consumer
+          - Core
+          - Infra
+          - Tests
+
+    steps:
+    - name: Check Out Repository
+      uses: actions/checkout@v2
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Build Service
+      run: dotnet build
+      working-directory: ${{ matrix.service }}
+
+    - name: Run Tests
+      if: contains(matrix.service, 'Tests')
+      run: dotnet test
+      working-directory: Fiap.Tests
+
+    - name: Build Docker Image
+      run: docker build -t cdoichedocker/fiap-${{ matrix.service | toLower }}:latest .
+      working-directory: Fiap.${{ matrix.service }}
+
+    - name: Push Docker Image to DockerHub
+      run: docker push cdoichedocker/fiap-${{ matrix.service | toLower }}:latest
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f Fiap.${{ matrix.service }}/kubernetes/pod.yaml
+        kubectl apply -f Fiap.${{ matrix.service }}/kubernetes/service.yaml
+        kubectl apply -f Fiap.${{ matrix.service }}/kubernetes/deployment.yaml
