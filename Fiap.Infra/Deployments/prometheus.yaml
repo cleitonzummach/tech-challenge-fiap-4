@@ -16,16 +16,20 @@ spec:
       containers:
       - name: prometheus
         image: prom/prometheus:v2.53.0
+        args:
+          - '--config.file=/etc/prometheus/prometheus.yml'
         ports:
         - containerPort: 9090
         volumeMounts:
         - name: config-volume
-          mountPath: /etc/prometheus
+          mountPath: /etc/prometheus/prometheus.yml
+          subPath: prometheus.yml
         - name: prometheus-storage
           mountPath: /prometheus
       volumes:
       - name: config-volume
         configMap:
           name: prometheus-config
+
       - name: prometheus-storage
         emptyDir: {}

@@ -10,13 +10,16 @@ spec:
     name: consultar-contato-deployment
   minReplicas: 2
   maxReplicas: 10
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 30
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 70
+        averageUtilization: 35
 
 ---
 apiVersion: autoscaling/v2
@@ -37,7 +40,7 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 70
+        averageUtilization: 35
 
 ---
 apiVersion: autoscaling/v2
@@ -58,7 +61,7 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 70
+        averageUtilization: 35
 
 ---
 apiVersion: autoscaling/v2
@@ -79,7 +82,7 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 70
+        averageUtilization: 35
 
 ---
 apiVersion: autoscaling/v2
@@ -100,4 +103,4 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 70
+        averageUtilization: 35

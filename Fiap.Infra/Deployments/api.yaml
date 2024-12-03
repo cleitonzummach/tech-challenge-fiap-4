@@ -20,17 +20,22 @@ spec:
         - containerPort: 8080
         resources:
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 25m
+            memory: 64Mi
           limits:
-            cpu: 250m
-            memory: 256Mi
+            cpu: 50m
+            memory: 128Mi
         env:
         - name: ASPNETCORE_ENVIRONMENT
           valueFrom:
             configMapKeyRef:
               name: api-configs
               key: ASPNETCORE_ENVIRONMENT
+        - name: OTLP__ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: OTLP__ENDPOINT
         - name: POSTGRES_HOST
           valueFrom:
             configMapKeyRef:
@@ -91,6 +96,11 @@ spec:
             configMapKeyRef:
               name: api-configs
               key: ASPNETCORE_ENVIRONMENT
+        - name: OTLP__ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: OTLP__ENDPOINT
         - name: ConsultarServiceUrl
           value: http://consultar-contato-service
         - name: RABBIT_HOST
@@ -138,6 +148,11 @@ spec:
             configMapKeyRef:
               name: api-configs
               key: ASPNETCORE_ENVIRONMENT
+        - name: OTLP__ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: OTLP__ENDPOINT
         - name: ConsultarServiceUrl
           value: http://consultar-contato-service
         - name: RABBIT_HOST
@@ -185,6 +200,11 @@ spec:
             configMapKeyRef:
               name: api-configs
               key: ASPNETCORE_ENVIRONMENT
+        - name: OTLP__ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: api-configs
+              key: OTLP__ENDPOINT
         - name: ConsultarServiceUrl
           value: http://consultar-contato-service
         - name: RABBIT_HOST
