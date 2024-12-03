@@ -1,4 +1,3 @@
-
 name: CI/CD Pipeline
 
 on:
@@ -29,19 +28,23 @@ jobs:
 
     - name: Build Service
       run: dotnet build
-      working-directory: ${{ matrix.service }}
+      working-directory: Fiap.${{ matrix.service }}
 
     - name: Run Tests
       if: contains(matrix.service, 'Tests')
       run: dotnet test
       working-directory: Fiap.Tests
 
+    - name: Set Docker Image Name
+      id: set-docker-image-name
+      run: echo "IMAGE_NAME=fiap-${{ matrix.service }}" | sed 's/[A-Z]/\L&/g' >> $GITHUB_ENV
+
     - name: Build Docker Image
-      run: docker build -t cdoichedocker/fiap-${{ matrix.service | toLower }}:latest .
+      run: docker build -t cdoichedocker/${{ env.IMAGE_NAME }}:latest .
       working-directory: Fiap.${{ matrix.service }}
 
     - name: Push Docker Image to DockerHub
-      run: docker push cdoichedocker/fiap-${{ matrix.service | toLower }}:latest
+      run: docker push cdoichedocker/${{ env.IMAGE_NAME }}:latest
 
     - name: Deploy to Kubernetes
       run: |
